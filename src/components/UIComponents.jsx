@@ -1,6 +1,6 @@
 import React from 'react';
 
-// --- Ícones Locais para UIComponents ---
+// --- Ícones Locais ---
 const InfoIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 cursor-help">
     <circle cx="12" cy="12" r="10" />
@@ -23,12 +23,14 @@ const ArrowDownIcon = () => (
   </svg>
 );
 
-// --- Cabeçalho Simples (Login) ---
+// --- Cabeçalho Simples (Tela de Login) ---
 export const TopHeader = () => (
   <div className="bg-white shadow-md">
     <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+      {/* LADO ESQUERDO: Título do Sistema */}
       <div className="flex items-center space-x-4">
-        <div className="w-12 h-12 bg-blue-800 rounded-full flex items-center justify-center text-white font-bold text-xl">
+        {/* Ícone ou Logo do Sistema (Opcional) */}
+        <div className="w-12 h-12 bg-blue-800 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-sm">
           SAD
         </div>
         <div>
@@ -36,27 +38,26 @@ export const TopHeader = () => (
           <p className="text-sm text-gray-600">Sistema de Extração de dados imobiliários</p>
         </div>
       </div>
+
+      {/* LADO DIREITO: Logos Institucionais (Poli + SAD) */}
       <div className="flex items-center space-x-6">
-        <div className="text-right">
-          <h3 className="text-sm font-medium text-gray-700">Secretaria de Administração</h3>
-          <div className="flex items-center justify-end space-x-2">
-            <span className="text-xs font-bold text-blue-800">GOVERNO DE</span>
-            <span className="text-lg font-bold text-yellow-500">PERNAMBUCO</span>
-          </div>
-        </div>
+        <img 
+          src="/polilogo.png" 
+          alt="Logo Poli" 
+          className="h-12 object-contain" 
+        />
+        <div className="h-10 w-px bg-gray-300"></div> {/* Divisória visual */}
+        <img 
+          src="/sadpe_logo.png" 
+          alt="Logo SAD PE" 
+          className="h-12 object-contain" 
+        />
       </div>
     </div>
   </div>
 );
 
-// --- Rodapé ---
-export const Footer = () => (
-  <footer className="w-full bg-blue-800 p-4 text-center text-white">
-    ©Todos os direitos reservados à Secretaria de Administração de Pernambuco - 2025
-  </footer>
-);
-
-// --- Cabeçalho com Navegação ---
+// --- Cabeçalho Principal (Logado) ---
 export const Header = ({ currentPage, setCurrentPage, userRole }) => {
   const allNavItems = [
     { id: 'upload', label: 'Upload de documentos', roles: ['admin', 'cadastro', 'gestor'] },
@@ -71,10 +72,11 @@ export const Header = ({ currentPage, setCurrentPage, userRole }) => {
 
   return (
     <header className="bg-white shadow-md">
-      {/* Reutiliza o TopHeader visualmente mas mantendo a estrutura */}
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+        
+        {/* LADO ESQUERDO */}
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-blue-800 rounded-full flex items-center justify-center text-white font-bold text-xl">
+          <div className="w-12 h-12 bg-blue-800 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-sm">
             SAD
           </div>
           <div>
@@ -82,18 +84,33 @@ export const Header = ({ currentPage, setCurrentPage, userRole }) => {
             <p className="text-sm text-gray-600">Sistema de Extração de dados imobiliários</p>
           </div>
         </div>
+
+        {/* LADO DIREITO: Logos + Usuário */}
         <div className="flex items-center space-x-6">
-          <div className="text-right">
-            <h3 className="text-sm font-medium text-gray-700">Secretaria de Administração</h3>
-            <div className="flex items-center justify-end space-x-2">
-              <span className="text-xs font-bold text-blue-800">GOVERNO DE</span>
-              <span className="text-lg font-bold text-yellow-500">PERNAMBUCO</span>
-            </div>
+          
+          {/* Container dos Logos */}
+          <div className="flex items-center space-x-4 mr-4">
+             <img 
+              src="/polilogo.png" 
+              alt="Logo Poli" 
+              className="h-10 object-contain" 
+            />
+            <div className="h-8 w-px bg-gray-300"></div>
+            <img 
+              src="/sadpe_logo.png" 
+              alt="Logo SAD PE" 
+              className="h-10 object-contain" 
+            />
           </div>
-          <div className="flex items-center space-x-3">
-            <span className="text-gray-700">Olá, <span className="font-medium">Nome do usuário</span></span>
-            <div className="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center text-blue-700 font-bold">
-              TT
+
+          {/* Área do Usuário */}
+          <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
+            <div className="text-right hidden md:block">
+              <p className="text-sm text-gray-700 font-medium">Usuário Logado</p>
+              <p className="text-xs text-gray-500 capitalize">{userRole}</p>
+            </div>
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold border border-blue-200">
+              U
             </div>
           </div>
         </div>
@@ -101,15 +118,15 @@ export const Header = ({ currentPage, setCurrentPage, userRole }) => {
       
       {/* Navegação */}
       <nav className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-6 flex items-center">
+        <div className="container mx-auto px-6 flex items-center overflow-x-auto">
           {navItems.map(item => (
             <button
               key={item.id}
               onClick={() => setCurrentPage(item.id)}
-              className={`py-4 px-4 text-sm font-medium ${
+              className={`py-4 px-4 text-sm font-medium whitespace-nowrap transition-colors duration-200 ${
                 currentPage === item.id
                   ? 'text-blue-700 border-b-2 border-blue-700'
-                  : 'text-gray-600 hover:text-blue-700'
+                  : 'text-gray-600 hover:text-blue-700 hover:bg-gray-50'
               }`}
             >
               {item.label}
@@ -121,7 +138,17 @@ export const Header = ({ currentPage, setCurrentPage, userRole }) => {
   );
 };
 
-// --- Stepper ---
+// --- Rodapé ---
+export const Footer = () => (
+  <footer className="w-full bg-blue-800 p-4 text-center text-white">
+    ©Todos os direitos reservados à Secretaria de Administração de Pernambuco - 2025
+  </footer>
+);
+
+// --- Componentes Auxiliares (Stepper, ConfidenceBar, etc) continuam iguais ---
+// MANTENHA O RESTANTE DO CÓDIGO ABAIXO IGUAL (Stepper, Pagination, Charts...)
+// Vou incluir aqui apenas para garantir que o arquivo fique completo e funcional se você copiar tudo.
+
 export const Stepper = ({ currentStep }) => {
   const steps = [
     { id: 1, label: 'Upload' },
@@ -160,7 +187,6 @@ export const Stepper = ({ currentStep }) => {
   );
 };
 
-// --- Barra de Confiabilidade ---
 export const ConfidenceBar = ({ value }) => {
   let color = 'bg-green-500';
   if (value < 40) color = 'bg-red-500';
@@ -173,7 +199,6 @@ export const ConfidenceBar = ({ value }) => {
   );
 };
 
-// --- Paginação ---
 export const Pagination = ({ itemsPerPage, totalItems, onPageChange, onItemsPerPageChange }) => {
   return (
     <div className="flex justify-between items-center mt-6">
@@ -204,7 +229,6 @@ export const Pagination = ({ itemsPerPage, totalItems, onPageChange, onItemsPerP
   );
 };
 
-// --- Cards e Gráficos ---
 export const InfoCard = ({ title, value, change, changeType, daily, children }) => (
   <div className="bg-white p-6 rounded-lg shadow-lg">
     <div className="flex justify-between items-center mb-2">
