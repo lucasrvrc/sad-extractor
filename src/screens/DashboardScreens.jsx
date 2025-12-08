@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Pagination, InfoCard, MiniLineChart, BarChart } from '../components/UIComponents';
-import { ChevronsUpDownIcon, SearchIcon, CalendarIcon, TrashIcon } from '../components/Icons';
+import { ChevronsUpDownIcon, SearchIcon, CalendarIcon, TrashIcon } from '../components/icons';
 
-// --- User Log Screen ---
 export const UserLogScreen = () => {
   const logData = [
     { user: 'User_01', action: 'Editou laudo', laudo: 'LA 000 SAD/XXX', date: '18/07/2025' },
@@ -64,7 +63,6 @@ export const UserLogScreen = () => {
   );
 };
 
-// --- Laudo History Screen ---
 export const LaudoHistoryScreen = () => {
   const mockData = [
     { id: 'LA 000 SAD/XXX', endereco: 'Rua XXXX XXXX', coordS: "0°00'00.0\"S", coordW: "0°00'00.0\"W", estado: 'red', valor: 'R$ x.xxx.xxx,xx', data: 'XX/XX/2025' },
@@ -89,7 +87,6 @@ export const LaudoHistoryScreen = () => {
         <h2 className="text-2xl font-semibold text-gray-800">Histórico de Laudos</h2>
         <p className="text-gray-600 mb-6">Visualização de todos os laudos que foram extraídos ao longo do tempo.</p>
         
-        {/* Filtros de Busca */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">N° do documento</label>
@@ -126,7 +123,6 @@ export const LaudoHistoryScreen = () => {
           </button>
         </div>
 
-        {/* Tabela */}
         <h3 className="text-lg font-semibold text-gray-700 mb-4">Visualização dos dados que foram extraídos</h3>
         <div className="border rounded-lg overflow-hidden">
           <table className="min-w-full text-left text-sm text-gray-600">
@@ -165,7 +161,6 @@ export const LaudoHistoryScreen = () => {
         
         <Pagination itemsPerPage={4} totalItems={300} onPageChange={() => {}} onItemsPerPageChange={() => {}} />
         
-        {/* Ações de Exportação */}
         <div className="flex justify-between items-center mt-12 border-t pt-6">
           <div className="flex items-center space-x-4">
             <span className="text-gray-700 font-medium">Opções para exportação dos laudos:</span>
@@ -185,14 +180,22 @@ export const LaudoHistoryScreen = () => {
   );
 };
 
-// --- Config Screen ---
-export const ConfigScreen = ({ onEdit, onResend }) => {
-  const users = [
-    { id: '04', name: 'Nome e sobrenome', email: 'email@sad.pe.gov.br', tipo: 'Cadastro', acesso: '10/07/2025', total: '05' },
-    { id: '03', name: 'Nome e sobrenome', email: 'email@sad.pe.gov.br', tipo: 'Gestão', acesso: '17/07/2025', total: '10' },
-    { id: '02', name: 'Nome e sobrenome', email: 'email@sad.pe.gov.br', tipo: 'Cadastro', acesso: '15/07/2025', total: '02' },
-    { id: '01', name: 'Nome e sobrenome', email: 'email@sad.pe.gov.br', tipo: 'Cadastro', acesso: '18/07/2025', total: '10' },
-  ];
+export const ConfigScreen = ({ users, onAddUser, onEditUser, onDeleteUser, onResend }) => {
+  const [newName, setNewName] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [newRole, setNewRole] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (newName && newEmail && newRole) {
+      onAddUser({ name: newName, email: newEmail, tipo: newRole });
+      setNewName('');
+      setNewEmail('');
+      setNewRole('');
+    } else {
+      alert("Por favor, preencha todos os campos.");
+    }
+  };
 
   return (
     <div className="container mx-auto px-6 py-8">
@@ -200,36 +203,50 @@ export const ConfigScreen = ({ onEdit, onResend }) => {
         <h2 className="text-2xl font-semibold text-gray-800">Configurações dos usuários</h2>
         <p className="text-gray-600 mb-6">Configurações e cadastros dos usuários no sistema</p>
         
-        {/* Formulário Novo Usuário */}
-        <div className="mb-8">
+        <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
           <h3 className="text-xl font-semibold text-gray-700 mb-4">Novo usuário</h3>
-          <form className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+          <form className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end" onSubmit={handleSubmit}>
             <div className="md:col-span-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-              <input type="text" placeholder="User_001" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" />
+              <input 
+                type="text" 
+                placeholder="User_001" 
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white" 
+              />
             </div>
             <div className="md:col-span-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input type="email" placeholder="email@sad.pe.gov.br" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" />
+              <input 
+                type="email" 
+                placeholder="email@sad.pe.gov.br" 
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white" 
+              />
             </div>
             <div className="md:col-span-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">Função</label>
-              <select className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500">
-                <option>Selecione o cargo</option>
-                <option>Cadastro</option>
-                <option>Gestão</option>
-                <option>Admin</option>
+              <select 
+                value={newRole}
+                onChange={(e) => setNewRole(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-500"
+              >
+                <option value="">Selecione o cargo</option>
+                <option value="Cadastro">Cadastro</option>
+                <option value="Gestão">Gestão</option>
+                <option value="Admin">Admin</option>
               </select>
             </div>
             <div className="md:col-span-1">
-              <button className="w-full bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-blue-800">
+              <button type="submit" className="w-full bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-blue-800">
                 Criar
               </button>
             </div>
           </form>
         </div>
 
-        {/* Tabela de Usuários */}
         <div className="border rounded-lg overflow-hidden">
           <table className="min-w-full text-left text-sm text-gray-600">
             <thead className="bg-gray-50 border-b">
@@ -253,8 +270,8 @@ export const ConfigScreen = ({ onEdit, onResend }) => {
                   <td className="p-4">{user.acesso}</td>
                   <td className="p-4">{user.total}</td>
                   <td className="p-4 flex space-x-2">
-                    <button className="bg-red-600 text-white text-xs font-semibold py-1 px-3 rounded-md hover:bg-red-700">Inativar</button>
-                    <button onClick={onEdit} className="bg-yellow-400 text-gray-800 text-xs font-semibold py-1 px-3 rounded-md hover:bg-yellow-500">Editar</button>
+                    <button onClick={() => onDeleteUser(user.id)} className="bg-red-600 text-white text-xs font-semibold py-1 px-3 rounded-md hover:bg-red-700">Inativar</button>
+                    <button onClick={() => onEditUser(user)} className="bg-yellow-400 text-gray-800 text-xs font-semibold py-1 px-3 rounded-md hover:bg-yellow-500">Editar</button>
                     <button onClick={onResend} className="bg-blue-600 text-white text-xs font-semibold py-1 px-3 rounded-md hover:bg-blue-700">Reenviar E-mail</button>
                   </td>
                 </tr>
@@ -263,14 +280,13 @@ export const ConfigScreen = ({ onEdit, onResend }) => {
           </table>
         </div>
         
-        <Pagination itemsPerPage={4} totalItems={300} onPageChange={() => {}} onItemsPerPageChange={() => {}} />
+        <Pagination itemsPerPage={4} totalItems={users.length} onPageChange={() => {}} onItemsPerPageChange={() => {}} />
 
       </div>
     </div>
   );
 };
 
-// --- Indicators Screen ---
 export const IndicatorsScreen = () => {
   const [activeTab, setActiveTab] = useState('sales');
   const salesRanking = [
@@ -288,7 +304,6 @@ export const IndicatorsScreen = () => {
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">Painel de Indicadores</h2>
       <p className="text-gray-600 mb-8">Principais metricas e acompanhamentos sobre os dados extraídos dos laudos</p>
 
-      {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <InfoCard 
           title="Total Sales" 
@@ -313,7 +328,6 @@ export const IndicatorsScreen = () => {
           changeType="down" 
           daily="Conversion Rate: 60%"
         >
-          {/* Simulação do mini gráfico de barras */}
           <div className="flex items-end h-10 space-x-1">
             <div className="w-2 bg-blue-500" style={{height: '40%'}}></div>
             <div className="w-2 bg-blue-500" style={{height: '60%'}}></div>
@@ -335,9 +349,7 @@ export const IndicatorsScreen = () => {
         />
       </div>
 
-      {/* Seção Principal de Gráficos */}
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        {/* Abas e Controles */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
           <div className="flex space-x-4">
             <button 
@@ -367,12 +379,10 @@ export const IndicatorsScreen = () => {
           </div>
         </div>
 
-        {/* Conteúdo das Abas (Gráfico e Ranking) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <h4 className="text-md font-semibold text-gray-700 mb-4">Stores Sales Trend</h4>
             <div className="relative w-full h-80">
-              {/* Eixos Y simulados */}
               <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-400" style={{height: 'calc(100% - 1.5rem)'}}>
                 <span>1200</span>
                 <span>1000</span>
@@ -382,7 +392,6 @@ export const IndicatorsScreen = () => {
                 <span>200</span>
                 <span>0</span>
               </div>
-              {/* Gráfico de Barras */}
               <div className="pl-8 h-full">
                 <BarChart />
               </div>

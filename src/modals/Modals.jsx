@@ -1,50 +1,89 @@
-import React from 'react';
-import { XIcon } from '../components/Icons';
+import React, { useState, useEffect } from 'react';
+import { XIcon } from '../components/icons';
 
-export const EditUserModal = ({ show, onClose }) => {
+export const EditUserModal = ({ show, onClose, userToEdit, onSave }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState('');
+
+  // Este useEffect é CRUCIAL: Preenche os dados quando o usuário muda
+  useEffect(() => {
+    if (userToEdit) {
+      setName(userToEdit.name);
+      setEmail(userToEdit.email);
+      setRole(userToEdit.tipo);
+    }
+  }, [userToEdit]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (userToEdit) {
+      onSave({ 
+        ...userToEdit, // Mantém o ID e outros dados
+        name, 
+        email, 
+        tipo: role 
+      });
+    }
+  };
+
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center text-blue-800 mb-6">Editar Usuário</h2>
-        <div className="border-b-2 border-blue-700 w-24 mx-auto mb-8"></div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
+        <div className="bg-blue-800 p-4 flex justify-between items-center">
+          <h2 className="text-xl font-bold text-white">Editar Usuário</h2>
+          <button onClick={onClose} className="text-white hover:text-gray-300">
+            <XIcon />
+          </button>
+        </div>
         
-        <form className="space-y-6">
+        <form className="p-6 space-y-5" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-lg font-medium text-gray-700 mb-2">Nome</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
             <input 
               type="text" 
-              defaultValue="User_xxx"
-              className="w-full p-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-600" 
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-700 mb-2">Senha</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
             <input 
-              type="text" 
-              readOnly
-              defaultValue="User_xxx@sad.pe.gov.br"
-              className="w-full p-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-500 cursor-not-allowed" 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-gray-700 mb-2">Função</label>
-            <select className="w-full p-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-600 appearance-none">
-              <option>Selecione o cargo</option>
-              <option>Usuário Cadastral</option>
-              <option>Usuário Gestor</option>
-              <option>Usuário Administrador</option>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Função</label>
+            <select 
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              <option value="Cadastro">Cadastro</option>
+              <option value="Gestão">Gestão</option>
+              <option value="Admin">Admin</option>
             </select>
           </div>
           
-          <div className="pt-4">
+          <div className="pt-4 flex space-x-3">
             <button 
               type="button" 
               onClick={onClose}
-              className="w-full bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-800 transition duration-300 text-lg"
+              className="flex-1 bg-gray-200 text-gray-700 font-semibold py-3 rounded-lg hover:bg-gray-300 transition"
             >
-              Salvar alterações
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              className="flex-1 bg-blue-700 text-white font-semibold py-3 rounded-lg shadow hover:bg-blue-800 transition"
+            >
+              Salvar Alterações
             </button>
           </div>
         </form>
@@ -57,32 +96,18 @@ export const ConfirmResendModal = ({ show, onClose }) => {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-lg overflow-hidden">
-        <div className="bg-blue-700 text-white p-6 flex justify-between items-center">
-          <h2 className="text-2xl font-semibold">Confirmar Ação</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
+        <div className="bg-blue-700 text-white p-4 flex justify-between items-center">
+          <h2 className="text-lg font-bold">Confirmar Ação</h2>
           <button onClick={onClose}><XIcon /></button>
         </div>
-        <div className="p-8">
-          <p className="text-xl text-gray-800 text-center mb-4">
-            Tem certeza que deseja reenviar o e-mail para este usuário?
-          </p>
-          <p className="text-lg text-red-600 text-center mb-8">
-            Isso irá gerar uma nova senha temporária e invalidar a senha atual.
-          </p>
-          <div className="flex justify-center space-x-6">
-            <button 
-              onClick={onClose}
-              className="bg-gray-400 text-white font-semibold py-3 px-10 rounded-lg hover:bg-gray-500 transition duration-300 text-lg"
-            >
-              Cancelar
-            </button>
-            <button 
-              onClick={onClose}
-              className="bg-red-600 text-white font-semibold py-3 px-10 rounded-lg hover:bg-red-700 transition duration-300 text-lg"
-            >
-              Sim, Reenviar
-            </button>
+        <div className="p-8 text-center">
+          <p className="text-lg text-gray-800 mb-2">Reenviar e-mail de acesso?</p>
+          <p className="text-sm text-gray-500 mb-6">Isso invalidará a senha atual do usuário.</p>
+          <div className="flex justify-center space-x-4">
+            <button onClick={onClose} className="bg-gray-200 text-gray-700 font-semibold py-2 px-6 rounded-lg hover:bg-gray-300">Cancelar</button>
+            <button onClick={onClose} className="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700">Confirmar</button>
           </div>
         </div>
       </div>
@@ -94,26 +119,18 @@ export const ConfirmValidateModal = ({ show, onClose, onConfirm }) => {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-lg overflow-hidden">
-        <div className="bg-blue-700 text-white p-6 flex justify-between items-center">
-          <h2 className="text-2xl font-semibold">Confirmar Ação</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
+        <div className="bg-green-600 text-white p-4 flex justify-between items-center">
+          <h2 className="text-lg font-bold">Validar Laudos</h2>
           <button onClick={onClose}><XIcon /></button>
         </div>
-        <div className="p-8">
-          <p className="text-xl text-gray-800 text-center mb-4">
-            Tem certeza que deseja validar os dados dos laudos?
-          </p>
-          <p className="text-lg text-red-600 text-center mb-8">
-            Uma vez validado não será possível editar o laudo
-          </p>
-          <div className="flex justify-center">
-            <button 
-              onClick={onConfirm}
-              className="bg-blue-700 text-white font-semibold py-3 px-16 rounded-lg shadow-md hover:bg-blue-800 transition duration-300 text-lg"
-            >
-              Validar Dados
-            </button>
+        <div className="p-8 text-center">
+          <p className="text-lg text-gray-800 mb-2">Confirmar validação dos dados?</p>
+          <p className="text-sm text-gray-500 mb-6">Esta ação não pode ser desfeita.</p>
+          <div className="flex justify-center space-x-4">
+            <button onClick={onClose} className="bg-gray-200 text-gray-700 font-semibold py-2 px-6 rounded-lg hover:bg-gray-300">Voltar</button>
+            <button onClick={onConfirm} className="bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700">Validar</button>
           </div>
         </div>
       </div>
