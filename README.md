@@ -14,7 +14,7 @@ Git - Para clonar o repositório.
 Instalação e Configuração
 Clone o repositório Abra o seu terminal e rode o comando:
 
-    git clone https://github.com/SEU-USUARIO/sad-extractor.git
+    git clone https://github.com/lucasrvrc/sad-extractor.git
     
 
 Instale as dependências Este comando vai ler o arquivo package.json e baixar todas as bibliotecas necessárias (como React, Tailwind, Vite, etc.) para a pasta node_modules:
